@@ -14,8 +14,8 @@
 
 ### Installation steps
 
-1. Download the [latest release](https://github.com/begateway/whmcs-payment-module/releases/latest) or clone the repository
-2. Go to the directory `src`
+1. Download the [latest release](https://github.com/beGateway/whmcs-payment-module/raw/master/begateway.zip)
+2. Unpack it and go to the directory `src`
 3. Copy/upload the following folder `modules` to `<whmcs dir>`.
 4. Go to the WHMCS admin area and go to `setup -> payments -> payment gateways`.
 5. Click the tab `All Payment Gateways`
@@ -54,8 +54,8 @@ Then you can use the test data to make a test payment:
 
 ### Шаги по установке
 
-1. Скачайте [последнюю версию](https://github.com/begateway/whmcs-payment-module/releases/latest) или скачайте репозиторий
-2. Перейдите в директорию `src`
+1. Скачайте [последнюю версию](https://github.com/beGateway/whmcs-payment-module/raw/master/begateway.zip)
+2. Распакуйте архив и перейдите в директорию `src`
 3. Скопируйте/загрузите директорию `modules` в директорию `<whmcs dir>`.
 4. Зайдите в зону администратора WHMCS и прейдите `Настройки -> Платежи -> Платежные шлюзы`.
 5. Нажмите закладку `All Payment Gateways`
