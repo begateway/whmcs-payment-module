@@ -14,14 +14,14 @@
  *
  * @author      beGateway
  * @copyright   2017 beGateway
- * @version     1.0.0
+ * @version     2.0.0
  * @license     https://opensource.org/licenses/MIT The MIT License
  */
 if (!defined("WHMCS")) {
     exit("This file cannot be accessed directly");
 }
 
-require_once(__DIR__ . '/begateway/lib/lib/beGateway.php');
+require_once(__DIR__ . '/begateway/lib/lib/BeGateway.php');
 
 function begateway_config() {
     global $_LANG;
@@ -50,7 +50,8 @@ function begateway_config() {
         "domain_gateway" => array("FriendlyName" => dgettext($textDomain, "Gateway Domain"), "Type" => "text", "Size" => "25", "Description" => dgettext($textDomain, "Enter your payment provider gateway domain e.g. gateway.domain.com")),
         "card_enable" => array("FriendlyName" => dgettext($textDomain, "Enable card payments"), "Type" => "yesno", "Description" => dgettext($textDomain, "Tick to enable card payments payments")),
         "erip_enable" => array("FriendlyName" => dgettext($textDomain, "Enable ERIP"), "Type" => "yesno", "Description" => dgettext($textDomain, "Tick to enable ERIP payments")),
-        "erip_service_no" => array("FriendlyName" => dgettext($textDomain, "ERIP service code"), "Type" => "text", "Size" => "25", "Description" => dgettext($textDomain, "Enter your ERIP service code"))
+        "erip_service_no" => array("FriendlyName" => dgettext($textDomain, "ERIP service code"), "Type" => "text", "Size" => "25", "Description" => dgettext($textDomain, "Enter your ERIP service code")),
+        "test_mode" => array("FriendlyName" => dgettext($textDomain, "Enable test mode"), "Type" => "yesno", "Description" => dgettext($textDomain, "Tick to enable test mode")),
     );
     return $configarray;
 }
@@ -95,7 +96,7 @@ function begateway_get_token($params) {
     $notification_url = $params["systemurl"] . "/modules/gateways/callback/begateway.php";
     $notification_url = str_replace('whmcs.local', 'whmcs.webhook.begateway.com:8443', $notification_url);
 
-    $token = new \beGateway\GetPaymentToken();
+    $token = new \BeGateway\GetPaymentToken();
     $token->money->setAmount($amount);
     $token->money->setCurrency($currency);
     $token->setTrackingId("$invoiceid|$customerid");
@@ -105,21 +106,22 @@ function begateway_get_token($params) {
     $token->setSuccessUrl($success_url);
     $token->setDeclineUrl($decline_url);
     $token->setFailUrl($fail_url);
-    $token->setCancelUrl($cancel_return);
 
     $token->customer->setFirstName($firstname);
     $token->customer->setLastName($lastname);
     $token->customer->setEmail($email);
-    $token->setAddressHidden();
-    $token->setEmailReadonly();
 
     if ($params['card_enable']) {
-      $cc = new \beGateway\PaymentMethod\CreditCard;
+      $cc = new \BeGateway\PaymentMethod\CreditCard;
       $token->addPaymentMethod($cc);
     }
 
+    if ($params['test_mode']) {
+      $token->setTestMode();
+    }
+
     if ($params['erip_enable']) {
-        $erip = new \beGateway\PaymentMethod\Erip(array(
+        $erip = new \BeGateway\PaymentMethod\Erip(array(
           'order_id' => $invoiceid,
           'account_number' => $invoiceid,
           'service_no' => $params['erip_service_no'],
@@ -128,18 +130,18 @@ function begateway_get_token($params) {
         $token->addPaymentMethod($erip);
       }
 
-    \beGateway\Settings::$shopId = $params['shop_id'];
-    \beGateway\Settings::$shopKey = $params['shop_key'];
-    \beGateway\Settings::$checkoutBase = 'https://' . $params['domain_checkout'];
+    \BeGateway\Settings::$shopId = $params['shop_id'];
+    \BeGateway\Settings::$shopKey = $params['shop_key'];
+    \BeGateway\Settings::$checkoutBase = 'https://' . $params['domain_checkout'];
     return $token->submit();
 }
 
 function begateway_refund($params) {
-    \beGateway\Settings::$shopId = $params['shop_id'];
-    \beGateway\Settings::$shopKey = $params['shop_key'];
-    \beGateway\Settings::$gatewayBase = 'https://' . $params['domain_gateway'];
+    \BeGateway\Settings::$shopId = $params['shop_id'];
+    \BeGateway\Settings::$shopKey = $params['shop_key'];
+    \BeGateway\Settings::$gatewayBase = 'https://' . $params['domain_gateway'];
 
-    $refund = new \beGateway\Refund;
+    $refund = new \BeGateway\Refund;
     $refund->setParentUid($params['transid']);
     $refund->money->setAmount($params['amount']);
     $refund->setReason($params['description']);

@@ -32,9 +32,9 @@ if (!$GATEWAY['type']) {
     exit("Module Not Activated");
 }
 
-$webhook = new \beGateway\Webhook;
-\beGateway\Settings::$shopId = $GATEWAY['shop_id'];
-\beGateway\Settings::$shopKey = $GATEWAY['shop_key'];
+$webhook = new \BeGateway\Webhook;
+\BeGateway\Settings::$shopId = $GATEWAY['shop_id'];
+\BeGateway\Settings::$shopKey = $GATEWAY['shop_key'];
 
 $logs = print_r($webhook->getResponse(), true);
 
