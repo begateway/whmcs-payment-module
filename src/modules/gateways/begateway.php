@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
  *
  * @author      beGateway
- * @copyright   2017 beGateway
- * @version     2.0.0
+ * @copyright   2019 beGateway
+ * @version     2.0.1
  * @license     https://opensource.org/licenses/MIT The MIT License
  */
 if (!defined("WHMCS")) {
@@ -141,7 +141,7 @@ function begateway_refund($params) {
     \BeGateway\Settings::$shopKey = $params['shop_key'];
     \BeGateway\Settings::$gatewayBase = 'https://' . $params['domain_gateway'];
 
-    $refund = new \BeGateway\Refund;
+    $refund = new \BeGateway\RefundOperation;
     $refund->setParentUid($params['transid']);
     $refund->money->setAmount($params['amount']);
     $refund->setReason($params['description']);
