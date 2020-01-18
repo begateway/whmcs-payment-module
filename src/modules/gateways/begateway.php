@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
  *
  * @author      beGateway
- * @copyright   2019 beGateway
- * @version     2.0.1
+ * @copyright   2020 beGateway
+ * @version     2.5.0
  * @license     https://opensource.org/licenses/MIT The MIT License
  */
 if (!defined("WHMCS")) {
@@ -106,6 +106,7 @@ function begateway_get_token($params) {
     $token->setSuccessUrl($success_url);
     $token->setDeclineUrl($decline_url);
     $token->setFailUrl($fail_url);
+    $token->additional_data->setContract(['recurring', 'card_on_file']);
 
     $token->customer->setFirstName($firstname);
     $token->customer->setLastName($lastname);

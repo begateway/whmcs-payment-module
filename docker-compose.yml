@@ -1,0 +1,63 @@
+version: '3.7'
+
+services:
+  whmcs: &whmcs
+    build: &build
+      context: ./docker-whmcs
+      dockerfile: Dockerfile
+    networks:
+      whmcs_net:
+        ipv4_address: 172.16.16.10
+    depends_on:
+      - mysql
+    ports:
+      - 8080:80
+    volumes:
+      - ./src/modules/gateways/begateway:/usr/share/nginx/html/modules/gateways/begateway
+      - ./src/modules/gateways/callback/begateway.php:/usr/share/nginx/html/modules/gateways/callback/begateway.php
+      - ./src/modules/gateways/begateway.php:/usr/share/nginx/html/modules/gateways/begateway.php
+    restart: always
+
+  whmcs_6_3_0:
+    build:
+      args:
+        whmcs_src: whmcs_nulled_v630_full.zip
+        ioncube: ioncube_loaders_lin_x86-64_5.1.2.tar.gz
+      <<: *build
+    <<: *whmcs
+
+  whmcs_7_8_3:
+    build:
+      args:
+        whmcs_src: whmcs-7.8.3-nulled.zip
+        ioncube: ioncube_loaders_lin_x86-64_10.2.5.tar.gz
+      <<: *build
+    <<: *whmcs
+
+  whmcs_7_9_0:
+    build:
+      args:
+        whmcs_src: whmcs_nulled_v_79.0_beta1_full_download.zip
+        ioncube: ioncube_loaders_lin_x86-64_10.2.5.tar.gz
+      <<: *build
+    <<: *whmcs
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    networks:
+      whmcs_net:
+        ipv4_address: 172.16.16.20
+    volumes:
+      - /var/lib/mysql
+      - ./docker/etc/mysql/mysql.conf.d/sql_mode.cnf:/etc/mysql/mysql.conf.d/sql_mode.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: whmcs
+
+networks:
+  whmcs_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.16.0/24"
