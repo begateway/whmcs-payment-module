@@ -18,10 +18,12 @@
  * @license     https://opensource.org/licenses/MIT The MIT License
  */
 require "../../../init.php";
-require_once(__DIR__ . '/../begateway/lib/lib/beGateway.php');
+require_once(__DIR__ . '/../begateway/lib/lib/BeGateway.php');
 
 $whmcs->load_function("gateway");
 $whmcs->load_function("invoice");
+$gatewayModuleName = basename(__FILE__, '.php');
+
 $GATEWAY = getGatewayVariables($gatewayModuleName);
 
 if (!$GATEWAY['type']) {
@@ -70,7 +72,7 @@ if ($webhook->isAuthorized()) {
         $cc = $webhook->getResponse()->transaction->credit_card;
         update_query("tblclients", array("cardtype" => $cc->brand, "gatewayid" => $cc->token, "cardlastfour" => $cc->last_4), array("id" => $customerid));
       }
-
+      
       die('OK');
   }
 } else {

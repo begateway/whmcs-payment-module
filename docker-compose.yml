@@ -21,7 +21,7 @@ services:
   whmcs_6_3_0:
     build:
       args:
-        whmcs_src: whmcs_nulled_v630_full.zip
+        whmcs_src: whmcs_v630_full.zip
         ioncube: ioncube_loaders_lin_x86-64_5.1.2.tar.gz
       <<: *build
     <<: *whmcs
@@ -29,7 +29,7 @@ services:
   whmcs_7_8_3:
     build:
       args:
-        whmcs_src: whmcs-7.8.3-nulled.zip
+        whmcs_src: whmcs_v783_full.zip
         ioncube: ioncube_loaders_lin_x86-64_10.2.5.tar.gz
       <<: *build
     <<: *whmcs
@@ -37,8 +37,8 @@ services:
   whmcs_7_9_0:
     build:
       args:
-        whmcs_src: whmcs_nulled_v_79.0_beta1_full_download.zip
-        ioncube: ioncube_loaders_lin_x86-64_10.2.5.tar.gz
+        whmcs_src: whmcs_v790_beta1_full.zip
+        ioncube: ioncube_loaders_lin_x86-64_5.1.2.tar.gz
       <<: *build
     <<: *whmcs
 
