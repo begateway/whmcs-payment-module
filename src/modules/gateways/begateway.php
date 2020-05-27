@@ -60,7 +60,7 @@ function begateway_link($params) {
     $response = begateway_get_token($params);
     if ($response->isSuccess()) {
       $code = '
-      <form method="post" action="' . $response->getRedirectUrlScriptName() . '">
+      <form method="get" action="' . $response->getRedirectUrlScriptName() . '">
         <input type="hidden" name="token" value="' . $response->getToken() . '">
         <input type="submit" value="'. $params['langpaynow'] . '">
       </form>';
@@ -150,7 +150,6 @@ function begateway_refund($params) {
     $refund_response = $refund->submit();
 
     $raw_message = print_r($refund_response->getResponse(), true);
-    print_r($refund_response);
     # Return Results
     if ($refund_response->isSuccess()) {
         return array("status" => "success", "transid" => $refund_response->getUid(), "rawdata" => $raw_message);
