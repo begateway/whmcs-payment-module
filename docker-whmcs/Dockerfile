@@ -9,24 +9,24 @@ ARG ioncube
 RUN \
   yum update -y && \
   yum install -y epel-release && \
-  yum install -y iproute python-setuptools hostname inotify-tools yum-utils which && \
+  yum install -y iproute hostname inotify-tools yum-utils \
+    wget unzip which python-pip && \
   yum clean all && \
-  easy_install supervisor
+  pip install --no-deps --ignore-installed --pre supervisor
 
-#RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
-  #yum install -y yum-utils && \
-  #yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm && \
-  #yum-config-manager --enable remi-php72
+RUN yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm && \
+  yum-config-manager --enable remi-php72 && \
+  yum install -y php php-common php-opcache php-mcrypt php-curl php-mysqlnd \
+    php-fpm php-mysql php-ldap php-cli php-mbstring php-pdo php-pear \
+    php-xml php-soap php-gd && \
+    mkdir -p /run/php-fpm/
 
 # Install nginx
 RUN rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm && \
 yum -y install nginx
 
-# Install php-fpm etc as well as wget/unzip
-RUN yum -y install php-fpm php-mysql php-ldap php-cli php-mbstring php-pdo php-pear php-xml php-soap php-gd wget unzip
-
 # Get & extract ionCube Loader
-RUN wget -O /tmp/ioncube.tgz http://downloads3.ioncube.com/loader_downloads/$ioncube && tar -zxf /tmp/ioncube.tgz -C /tmp
+ADD ioncube_loaders_lin_x86-64.tar.gz /tmp
 
 # tweak php-fpm config
 RUN sed -i -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /etc/php.ini && \
@@ -38,6 +38,7 @@ sed -i -e "s/pm.max_children = 5/pm.max_children = 9/g" /etc/php-fpm.d/www.conf 
 sed -i -e "s/pm.start_servers = 2/pm.start_servers = 3/g" /etc/php-fpm.d/www.conf && \
 sed -i -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 2/g" /etc/php-fpm.d/www.conf && \
 sed -i -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 4/g" /etc/php-fpm.d/www.conf && \
+sed -i -e "s/user = apache/user = nginx/g" /etc/php-fpm.d/www.conf && \
 sed -i -e "s/pm.max_requests = 500/pm.max_requests = 200/g" /etc/php-fpm.d/www.conf
 # tweak nginx config
 RUN sed -i -e"s/worker_processes  1/worker_processes 5/" /etc/nginx/nginx.conf && \
