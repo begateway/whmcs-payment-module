@@ -5,9 +5,16 @@ services:
     build: &build
       context: ./docker-whmcs
       dockerfile: Dockerfile
+      args:
+        #whmcs_src: whmcs_v630_full.zip
+        #ioncube: ioncube_loaders_lin_x86-64_5.1.2.tar.gz
+        whmcs_src: whmcs_v8.5.1_full.zip
+        #ioncube: ioncube_loaders_lin_x86-64_10.2.5.tar.gz
+        #whmcs_src: whmcs_v790_beta1_full.zip
+        ioncube: ioncube_loaders_lin_x86.tar.gz
     networks:
       whmcs_net:
-        ipv4_address: 172.16.16.10
+        ipv4_address: 172.16.17.10
     depends_on:
       - mysql
     ports:
@@ -18,36 +25,12 @@ services:
       - ./src/modules/gateways/begateway.php:/usr/share/nginx/html/modules/gateways/begateway.php
     restart: always
 
-  whmcs_6_3_0:
-    build:
-      args:
-        whmcs_src: whmcs_v630_full.zip
-        ioncube: ioncube_loaders_lin_x86-64_5.1.2.tar.gz
-      <<: *build
-    <<: *whmcs
-
-  whmcs_7_8_3:
-    build:
-      args:
-        whmcs_src: whmcs_v783_full.zip
-        ioncube: ioncube_loaders_lin_x86-64_10.2.5.tar.gz
-      <<: *build
-    <<: *whmcs
-
-  whmcs_7_9_0:
-    build:
-      args:
-        whmcs_src: whmcs_v790_beta1_full.zip
-        ioncube: ioncube_loaders_lin_x86-64_5.1.2.tar.gz
-      <<: *build
-    <<: *whmcs
-
   mysql:
     image: mysql:5.7
     restart: always
     networks:
       whmcs_net:
-        ipv4_address: 172.16.16.20
+        ipv4_address: 172.16.17.20
     volumes:
       - /var/lib/mysql
       - ./docker/etc/mysql/mysql.conf.d/sql_mode.cnf:/etc/mysql/mysql.conf.d/sql_mode.cnf
@@ -60,4 +43,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: "172.16.16.0/24"
+        - subnet: "172.16.17.0/24"
