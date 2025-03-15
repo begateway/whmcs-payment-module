@@ -26,7 +26,7 @@
 If you setup the module with values as follows:
 
   * Shop Id __361__
-  * Shop Key
+  * Shop Key __b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d__
   * Gateway Domain __demo-gateway.begateway.com__
   * Checkout Domain __checkout.begateway.com__
 
