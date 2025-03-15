@@ -18,3 +18,5 @@ $_GATEWAYLANG['erip_service_no'] = "Код услуги ЕРИП";
 $_GATEWAYLANG['erip_service_no_desc'] = "Введите ваш код услуги ЕРИП, выданный вашим провайдером платежей";
 $_GATEWAYLANG['test_mode'] = "Включить тестовый режим";
 $_GATEWAYLANG['test_mode_desc'] = "Отметьте, чтобы включить приём тестовых платежей";
+$_GATEWAYLANG['payment_valid']  = 'Оплата действительна (минут)';
+$_GATEWAYLANG['payment_valid_desc'] = 'Укажите количество минут, в течение которых заказ должен быть оплачен';

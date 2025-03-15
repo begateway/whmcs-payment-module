@@ -18,3 +18,5 @@ $_GATEWAYLANG['erip_service_no'] = "ERIP service code";
 $_GATEWAYLANG['erip_service_no_desc'] = "Enter your ERIP service code";
 $_GATEWAYLANG['test_mode'] = "Enable test mode";
 $_GATEWAYLANG['test_mode_desc'] = "Tick to enable test mode";
+$_GATEWAYLANG['payment_valid']  = 'Payment valid (minutes)';
+$_GATEWAYLANG['payment_valid_desc'] = 'The value sets a period of time within which an order must be paid';

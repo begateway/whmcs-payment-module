@@ -1,0 +1,16 @@
+{
+    "schema": "1.0",
+    "type": "whmcs-gateways",
+    "name": "begateway",
+    "license": "mit",
+    "category": "payments",
+    "description": {
+      "name": "beGateway Gateway Module",
+      "tagline": "beGateway allows you to take payments online"
+    },
+    "authors": [
+      {
+        "name": "eComCharge"
+      }
+    ]
+  }

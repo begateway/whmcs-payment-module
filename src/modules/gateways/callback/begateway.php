@@ -18,7 +18,7 @@
  * @license     https://opensource.org/licenses/MIT The MIT License
  */
 require "../../../init.php";
-require_once(__DIR__ . '/../begateway/lib/lib/BeGateway.php');
+require_once(__DIR__ . '/../begateway/vendor/autoload.php');
 
 $whmcs->load_function("gateway");
 $whmcs->load_function("invoice");
