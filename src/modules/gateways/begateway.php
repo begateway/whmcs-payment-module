@@ -113,7 +113,9 @@ function begateway_get_token($params) {
     $decline_url = $params["systemurl"] . "/viewinvoice.php?id=" . $invoiceid . '&paymentfailed=true';
     $fail_url = $params["systemurl"] . "/viewinvoice.php?id=" . $invoiceid . '&paymentfailed=true';
     $notification_url = $params["systemurl"] . "/modules/gateways/callback/begateway.php";
-    #$notification_url = 'https://itchy-humans-mate.loca.lt/' . "/modules/gateways/callback/begateway.php";
+    # Use localtunnel to get callback
+    # lt -p 80 -s 5bab2a71dcb5fddfe86722 -l 0.0.0.0
+    #$notification_url = 'https://5bab2a71dcb5fddfe86722.loca.lt/' . "/modules/gateways/callback/begateway.php";
 
     $token = new \BeGateway\GetPaymentToken();
     $token->money->setAmount($amount);
