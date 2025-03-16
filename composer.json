@@ -1,0 +1,23 @@
+{
+    "name": "begateway/whmcs-payment-module",
+    "description": "BeGateway Payment Gateway for WHMCS",
+    "keywords": [
+        "bepaid",
+        "begateway",
+        "payment processing",
+        "api"
+    ],
+    "config": {
+        "vendor-dir": "src/modules/gateways/begateway/vendor"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "BeGateway",
+            "email": "admin@begateway.com"
+        }
+    ],
+    "require": {
+        "begateway/begateway-api-php": ">=5.1.0"
+    }
+}

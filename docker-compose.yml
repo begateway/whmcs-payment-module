@@ -3,34 +3,33 @@ version: '3.7'
 services:
   whmcs: &whmcs
     build: &build
-      context: ./docker-whmcs
+      context: ./docker
       dockerfile: Dockerfile
       args:
+        php_version: 7.4
         #whmcs_src: whmcs_v630_full.zip
-        #ioncube: ioncube_loaders_lin_x86-64_5.1.2.tar.gz
-        whmcs_src: whmcs_v8.5.1_full.zip
-        #ioncube: ioncube_loaders_lin_x86-64_10.2.5.tar.gz
+        #whmcs_src: whmcs_v8.5.1_full.zip
+        whmcs_src: whmcs-8.12.1-release.1.zip
         #whmcs_src: whmcs_v790_beta1_full.zip
-        ioncube: ioncube_loaders_lin_x86.tar.gz
     networks:
       whmcs_net:
-        ipv4_address: 172.16.17.10
+        ipv4_address: 172.16.16.10
     depends_on:
       - mysql
     ports:
-      - 8080:80
+      - 80:80
     volumes:
-      - ./src/modules/gateways/begateway:/usr/share/nginx/html/modules/gateways/begateway
-      - ./src/modules/gateways/callback/begateway.php:/usr/share/nginx/html/modules/gateways/callback/begateway.php
-      - ./src/modules/gateways/begateway.php:/usr/share/nginx/html/modules/gateways/begateway.php
+      - ./src/modules/gateways/begateway:/app/modules/gateways/begateway
+      - ./src/modules/gateways/callback/begateway.php:/app/modules/gateways/callback/begateway.php
+      - ./src/modules/gateways/begateway.php:/app/modules/gateways/begateway.php
     restart: always
 
   mysql:
-    image: mysql:5.7
+    image: mariadb:10.9
     restart: always
     networks:
       whmcs_net:
-        ipv4_address: 172.16.17.20
+        ipv4_address: 172.16.16.20
     volumes:
       - /var/lib/mysql
       - ./docker/etc/mysql/mysql.conf.d/sql_mode.cnf:/etc/mysql/mysql.conf.d/sql_mode.cnf
@@ -43,4 +42,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: "172.16.17.0/24"
+        - subnet: "172.16.16.0/24"

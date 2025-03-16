@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2017 beGateway
+ * Copyright (C) 2025 beGateway
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,29 +13,45 @@
  * GNU General Public License for more details.
  *
  * @author      beGateway
- * @copyright   2020 beGateway
- * @version     2.5.0
+ * @copyright   2025 beGateway
+ * @version     2.6.0
  * @license     https://opensource.org/licenses/MIT The MIT License
  */
 if (!defined("WHMCS")) {
     exit("This file cannot be accessed directly");
 }
 
-require_once(__DIR__ . '/begateway/lib/lib/BeGateway.php');
+require_once(__DIR__ . '/begateway/vendor/autoload.php');
+
+function begateway_MetaData()
+{
+    return array(
+        'DisplayName' => 'beGateway Gateway Module',
+        'APIVersion' => '1.1', // Use API Version 1.1
+    );
+}
+
+function begateway_Version()
+{
+    return '2.6.0';
+}
 
 function begateway_config() {
-    global $_LANG;
+    global $whmcs;
 
-    // Set locale.
-    putenv('LC_ALL='. $_LANG['locale']);
-    setlocale(LC_ALL, $_LANG['locale']);
+    $currentUser = new \WHMCS\Authentication\CurrentUser;
+    $admin = $currentUser->admin();
 
-    // Text domain.
-    $textDomain = 'beGatewayPaymentGateway';
+    $language = ($admin) ? $admin->language : $whmcs->get_config('Language');
+    
+    if (empty($language))
+        $language = 'english';
 
-    // Bind text domain.
-    bindtextdomain($textDomain, __DIR__ . '/begateway/lang');
+    if (!file_exists(__DIR__ . '/begateway/lang/' . $language . '.php'))
+        $language = 'english';
 
+    /* @var array $_GATEWAYLANG */
+    require __DIR__ . '/begateway/lang/' . $language . '.php';
 
     $days = array();
     for($i=1;$i<31;$i++) {
@@ -44,19 +60,22 @@ function begateway_config() {
 
     $configarray = array(
         "FriendlyName" => array("Type" => "System", "Value" => "beGateway"),
-        "shop_id" => array("FriendlyName" => dgettext($textDomain, "Shop ID"), "Type" => "text", "Size" => "25", "Description" => dgettext($textDomain, "Enter your shop Id")),
-        "shop_key" => array("FriendlyName" => dgettext($textDomain, "Shop Key"), "Type" => "text", "Size" => "50", "Description" => dgettext($textDomain, "Enter your shop secret key")),
-        "domain_checkout" => array("FriendlyName" => dgettext($textDomain, "Checkout Domain"), "Type" => "text", "Size" => "25", "Description" => dgettext($textDomain, "Enter your payment provider checkout domain e.g. checkout.domain.com")),
-        "domain_gateway" => array("FriendlyName" => dgettext($textDomain, "Gateway Domain"), "Type" => "text", "Size" => "25", "Description" => dgettext($textDomain, "Enter your payment provider gateway domain e.g. gateway.domain.com")),
-        "card_enable" => array("FriendlyName" => dgettext($textDomain, "Enable card payments"), "Type" => "yesno", "Description" => dgettext($textDomain, "Tick to enable card payments payments")),
-        "erip_enable" => array("FriendlyName" => dgettext($textDomain, "Enable ERIP"), "Type" => "yesno", "Description" => dgettext($textDomain, "Tick to enable ERIP payments")),
-        "erip_service_no" => array("FriendlyName" => dgettext($textDomain, "ERIP service code"), "Type" => "text", "Size" => "25", "Description" => dgettext($textDomain, "Enter your ERIP service code")),
-        "test_mode" => array("FriendlyName" => dgettext($textDomain, "Enable test mode"), "Type" => "yesno", "Description" => dgettext($textDomain, "Tick to enable test mode")),
+        "shop_id" => array("FriendlyName" => $_GATEWAYLANG['shop_id'], "Type" => "text", "Size" => "25", "Description" => $_GATEWAYLANG['shop_id_desc']),
+        "shop_key" => array("FriendlyName" => $_GATEWAYLANG['shop_key'], "Type" => "text", "Size" => "50", "Description" => $_GATEWAYLANG['shop_key_desc']),
+        "domain_gateway" => array("FriendlyName" => $_GATEWAYLANG['domain_gateway'], "Type" => "text", "Size" => "25", "Description" => $_GATEWAYLANG['domain_gateway_desc']),
+        "domain_checkout" => array("FriendlyName" => $_GATEWAYLANG['domain_checkout'], "Type" => "text", "Size" => "25", "Description" => $_GATEWAYLANG['domain_checkout_desc']),
+        "payment_valid" => array("FriendlyName" => $_GATEWAYLANG['payment_valid'], "Type" => "text", "Size" => "25", "Description" => $_GATEWAYLANG['payment_valid_desc']),
+        "card_enable" => array("FriendlyName" => $_GATEWAYLANG['card_enable'], "Type" => "yesno", "Description" => $_GATEWAYLANG['card_enable_desc']),
+        "erip_enable" => array("FriendlyName" => $_GATEWAYLANG['erip_enable'], "Type" => "yesno", "Description" => $_GATEWAYLANG['erip_enable_desc']),
+        "erip_service_no" => array("FriendlyName" => $_GATEWAYLANG['erip_service_no'], "Type" => "text", "Size" => "25", "Description" => $_GATEWAYLANG['erip_service_no_desc']),
+        "test_mode" => array("FriendlyName" => $_GATEWAYLANG['test_mode'], "Type" => "yesno", "Description" => $_GATEWAYLANG['test_mode_desc'])
     );
     return $configarray;
 }
 
 function begateway_link($params) {
+    global $_LANG;
+
     $response = begateway_get_token($params);
     if ($response->isSuccess()) {
       $code = '
@@ -65,7 +84,7 @@ function begateway_link($params) {
         <input type="submit" value="'. $params['langpaynow'] . '">
       </form>';
     } else {
-      $code = '<div style="color: red;">'.dgettext($textDomain, "Error") . ': '. $response->getMessage() . '</div>';
+      $code = '<div style="color: red;">'. $_LANG['error'] . ': '. $response->getMessage() . '</div>';
     }
     return $code;
 }
@@ -94,7 +113,9 @@ function begateway_get_token($params) {
     $decline_url = $params["systemurl"] . "/viewinvoice.php?id=" . $invoiceid . '&paymentfailed=true';
     $fail_url = $params["systemurl"] . "/viewinvoice.php?id=" . $invoiceid . '&paymentfailed=true';
     $notification_url = $params["systemurl"] . "/modules/gateways/callback/begateway.php";
-    $notification_url = str_replace('whmcs.local', 'whmcs.webhook.begateway.com:8443', $notification_url);
+    # Use localtunnel to get callback
+    # lt -p 80 -s 5bab2a71dcb5fddfe86722 -l 0.0.0.0
+    #$notification_url = 'https://5bab2a71dcb5fddfe86722.loca.lt/' . "/modules/gateways/callback/begateway.php";
 
     $token = new \BeGateway\GetPaymentToken();
     $token->money->setAmount($amount);
@@ -112,6 +133,13 @@ function begateway_get_token($params) {
     $token->customer->setLastName($lastname);
     $token->customer->setEmail($email);
 
+    $token->additional_data->setPlatformData('WHMCS v' . $params['whmcsVersion']);
+    $token->additional_data->setIntegrationData('BeGateway Gateway Module v' . begateway_Version());
+
+    if (!empty($params['payment_valid'])) {
+        $token->setExpiryDate(date("c", intval($params['payment_valid']) * 60 + time() + 1));
+    }
+
     if ($params['card_enable']) {
       $cc = new \BeGateway\PaymentMethod\CreditCard;
       $token->addPaymentMethod($cc);
@@ -126,7 +154,7 @@ function begateway_get_token($params) {
           'order_id' => $invoiceid,
           'account_number' => $invoiceid,
           'service_no' => $params['erip_service_no'],
-          'service_info' => array($desription)
+          'service_info' => array($description)
         ));
         $token->addPaymentMethod($erip);
       }
@@ -158,10 +186,4 @@ function begateway_refund($params) {
     } else {
         return array("status" => "error", "rawdata" => $raw_message);
     }
-}
-
-function begateway_add_note($params) {
-    $result = select_query('tblinvoices','notes',array('id'=>$params['invoiceid']));
-    $note = mysql_fetch_array($result);
-    update_query('tblinvoices', array('notes'=> $notes['notes'] . "\r\n" . "THIS IS TEST TRANSACTION. UID: " . $params['transid']), array('id'=>$params['invoiceid']));
 }
