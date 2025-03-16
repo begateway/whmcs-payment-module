@@ -66,7 +66,6 @@ if ($webhook->isAuthorized()) {
       $money->setCents($webhook->getResponse()->transaction->amount);
 
       addInvoicePayment($invoiceid, $uid, $money->getAmount(), null, $gatewayModuleName);
-      begateway_add_note(array('invoiceid' => $invoiceid, 'transid' => $uid));
 
       if ($webhook->getResponse()->transaction->credit_card->token) {
         $cc = $webhook->getResponse()->transaction->credit_card;

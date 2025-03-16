@@ -152,7 +152,7 @@ function begateway_get_token($params) {
           'order_id' => $invoiceid,
           'account_number' => $invoiceid,
           'service_no' => $params['erip_service_no'],
-          'service_info' => array($desription)
+          'service_info' => array($description)
         ));
         $token->addPaymentMethod($erip);
       }
@@ -184,10 +184,4 @@ function begateway_refund($params) {
     } else {
         return array("status" => "error", "rawdata" => $raw_message);
     }
-}
-
-function begateway_add_note($params) {
-    $result = select_query('tblinvoices','notes',array('id'=>$params['invoiceid']));
-    $note = mysql_fetch_array($result);
-    update_query('tblinvoices', array('notes'=> $notes['notes'] . "\r\n" . "THIS IS TEST TRANSACTION. UID: " . $params['transid']), array('id'=>$params['invoiceid']));
 }
